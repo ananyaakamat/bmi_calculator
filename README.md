@@ -22,17 +22,16 @@ A stunning and user-friendly BMI (Body Mass Index) calculator built with Flutter
 ## 🚀 Quick Start
 
 ```bash
-# Clone this repository
 git clone https://github.com/ananyaakamat/bmi_calculator.git
 cd bmi_calculator
 
 # Install dependencies
 flutter pub get
 
-# Run in Chrome (fastest for testing)
+# Run in Chrome (instant testing!)
 flutter run -d chrome
 
-# Build Android APK
+# Build APK for mobile
 flutter build apk --release
 ```
 
@@ -43,6 +42,7 @@ flutter build apk --release
 #### 1. **Install Flutter SDK**
 
 **Windows:**
+
 ```bash
 # Option 1: Using winget (recommended)
 winget install --id=9NBLGGH4Z1JC
@@ -54,6 +54,7 @@ winget install --id=9NBLGGH4Z1JC
 ```
 
 **macOS:**
+
 ```bash
 # Using Homebrew (recommended)
 brew install flutter
@@ -62,6 +63,7 @@ brew install flutter
 ```
 
 **Linux:**
+
 ```bash
 # Download from: https://docs.flutter.dev/get-started/install/linux
 # Extract and add to PATH
@@ -70,6 +72,7 @@ brew install flutter
 #### 2. **Environment Variables Setup**
 
 **Windows (PowerShell):**
+
 ```powershell
 # Temporary (current session only)
 $env:PATH += ";C:\flutter\bin"
@@ -82,6 +85,7 @@ $env:PATH += ";C:\flutter\bin"
 ```
 
 **macOS/Linux (Bash/Zsh):**
+
 ```bash
 # Add to ~/.bashrc, ~/.zshrc, or ~/.profile
 export PATH="$PATH:/path/to/flutter/bin"
@@ -91,11 +95,13 @@ source ~/.bashrc  # or ~/.zshrc
 ```
 
 #### 3. **Install Dart SDK** (Included with Flutter)
+
 Dart SDK is automatically included with Flutter installation. No separate installation needed.
 
 #### 4. **Android Studio & Android SDK** (For APK development)
 
 **Windows:**
+
 ```bash
 # Using winget
 winget install Google.AndroidStudio
@@ -104,6 +110,7 @@ winget install Google.AndroidStudio
 ```
 
 **macOS:**
+
 ```bash
 # Using Homebrew
 brew install --cask android-studio
