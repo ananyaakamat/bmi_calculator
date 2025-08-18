@@ -91,8 +91,35 @@ class _BMIScreenState extends State<BMIScreen> with TickerProviderStateMixin {
     final h = double.tryParse(hTxt);
     final w = double.tryParse(wTxt);
 
-    if (h == null || w == null || h <= 0 || w <= 0) {
-      _snack('Please enter valid positive numbers for height and weight.');
+    if (h == null || w == null) {
+      _snack('Please enter valid numbers for height and weight.');
+      return;
+    }
+
+    if (h <= 0 || w <= 0) {
+      _snack('Please enter positive numbers for height and weight.');
+      return;
+    }
+
+    // Check height limits based on unit system
+    if (_unit == UnitSystem.metric && h >= 275) {
+      _snack('Please enter a valid height.');
+      return;
+    }
+    if (_unit == UnitSystem.imperial && h >= 108) {
+      // 275 cm = ~108 inches
+      _snack('Please enter a valid height.');
+      return;
+    }
+
+    // Check weight limits based on unit system
+    if (_unit == UnitSystem.metric && w >= 650) {
+      _snack('Please enter a valid weight.');
+      return;
+    }
+    if (_unit == UnitSystem.imperial && w >= 1433) {
+      // 650 kg = ~1433 lbs
+      _snack('Please enter a valid weight.');
       return;
     }
 
@@ -155,6 +182,81 @@ class _BMIScreenState extends State<BMIScreen> with TickerProviderStateMixin {
         ],
       ),
     );
+  }
+
+  void _showRecommendations() {
+    String title = '';
+    List<String> recommendations = [];
+
+    switch (_category) {
+      case 'Underweight':
+        title = 'Diet Recommendations for Underweight';
+        recommendations = [
+          '• Eat calorie-dense, nutrient-rich foods (nuts, seeds, avocados, whole milk, cheese).',
+          '• Increase protein intake (lean meats, eggs, lentils, beans).',
+          '• Include healthy carbs (whole grains, potatoes, rice, oats).',
+          '• Add healthy fats (olive oil, peanut butter, coconut).',
+          '• Frequent small meals + snacks.',
+          '• Strength training + protein for lean muscle gain.',
+        ];
+        break;
+      case 'Overweight':
+        title = 'Diet Recommendations for Overweight';
+        recommendations = [
+          '• Focus on portion control, balanced meals.',
+          '• High-protein, moderate-carb, high-fiber foods (lean meats, legumes, veggies, whole grains).',
+          '• Avoid sugary drinks, refined carbs, and fried foods.',
+          '• Increase fruits & vegetables.',
+          '• Drink plenty of water before meals.',
+          '• Moderate physical activity (30–45 mins daily).',
+        ];
+        break;
+      case 'Obese':
+        title = 'Diet Recommendations for Obese';
+        recommendations = [
+          '• Adopt calorie deficit diet under medical guidance.',
+          '• Prioritize high-fiber & high-protein foods for satiety.',
+          '• Cut refined sugars, processed foods, saturated fats.',
+          '• Prefer steamed, grilled, or baked meals over fried.',
+          '• Track calories & practice mindful eating.',
+          '• Gradual, sustainable weight loss (not crash diets).',
+          '• Regular physical activity + medical monitoring.',
+        ];
+        break;
+    }
+
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: Text(title),
+        content: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: recommendations
+                .map((rec) => Padding(
+                      padding: const EdgeInsets.only(bottom: 8.0),
+                      child: Text(
+                        rec,
+                        style: const TextStyle(fontSize: 14),
+                      ),
+                    ))
+                .toList(),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Got it'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  bool get _hasInputValues {
+    return _heightCtrl.text.trim().isNotEmpty ||
+        _weightCtrl.text.trim().isNotEmpty;
   }
 
   @override
@@ -228,15 +330,40 @@ class _BMIScreenState extends State<BMIScreen> with TickerProviderStateMixin {
                         const SizedBox(width: 12),
                         Expanded(
                           child: OutlinedButton.icon(
-                            onPressed: _reset,
+                            onPressed: _hasInputValues ? _reset : null,
                             icon: const Icon(Icons.refresh),
                             label: const Text('Reset'),
+                            style: OutlinedButton.styleFrom(
+                              foregroundColor: _hasInputValues
+                                  ? const Color(0xFFD32F2F)
+                                  : Colors.grey,
+                              side: BorderSide(
+                                color: _hasInputValues
+                                    ? const Color(0xFFD32F2F)
+                                    : Colors.grey,
+                              ),
+                            ),
                           ),
                         ),
                       ],
                     ),
                     const SizedBox(height: 20),
                     if (_bmi != null) _animatedResultCard(),
+                    if (_bmi != null && _category != 'Normal weight')
+                      const SizedBox(height: 12),
+                    if (_bmi != null && _category != 'Normal weight')
+                      SizedBox(
+                        width: double.infinity,
+                        child: FilledButton.icon(
+                          onPressed: _showRecommendations,
+                          icon: const Icon(Icons.restaurant_menu),
+                          label: const Text('Recommendations'),
+                          style: FilledButton.styleFrom(
+                            backgroundColor: const Color(0xFF2E7D32),
+                            foregroundColor: Colors.white,
+                          ),
+                        ),
+                      ),
                   ],
                 ),
               ),
